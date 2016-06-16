@@ -12,6 +12,8 @@ function formatMessage(raw) {
 var ws;
 var canvas;
 var context;
+var currentPosition = [0, 0];
+var positionOffset = [0, 0];
 
 function setup() {
 	canvas = document.getElementById("mainCanvas");
@@ -19,6 +21,8 @@ function setup() {
 	var horizontalTransform = Number(canvas.getAttribute("width").slice(0, -2))/2;
 	var verticalTransform = Number(canvas.getAttribute("height").slice(0, -2))/2;
 	context.transform(1, 0, 0, 1, horizontalTransform, verticalTransform);
+	context.moveTo(0, 0);
+	context.beginPath();
 
 	ws = new WebSocket("ws://127.0.0.1:12345/");
 	ws.onmessage = function(event) {
@@ -52,6 +56,12 @@ function mainLoop(data) {
 		console.log(quaternion);
 		//document.body.innerHTML = String(position) + "\n" + String(quaternion) + "\n" + document.body.innerHTML;
 
+		currentPosition[0] = position[0];
+		currentPosition[1] = position[1];
+
+		context.lineTo((position[0]-positionOffset[0]) * 100, (position[1]-positionOffset[1]) * -100);
+		context.stroke();
+
 		sendDataRequest();
 	}
 	else {
@@ -69,4 +79,16 @@ function formatRawMessage(raw) {
 		refined[i] = refined[i].replace(/\s/g, ""); //Remove every space in each array item by replacing it with nothing
 	}
 	return refined;
+}
+function reset() {
+	positionOffset[0] = currentPosition[0];
+	positionOffset[1] = currentPosition[1];
+
+	context.save();
+	context.setTransform(1, 0, 0, 1, 0, 0);
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	context.restore();
+	context.beginPath();
+
+	context.moveTo(0, 0);
 }

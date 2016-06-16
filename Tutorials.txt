@@ -5,3 +5,5 @@ http://www.w3schools.com/html/html5_canvas.asp
 http://www.w3schools.com/tags/playcanvas.asp?filename=playcanvas_transforme&preval=1,0,0,1,0,0
 http://www.w3schools.com/tags/canvas_transform.asp
 http://www.w3schools.com/html/html5_canvas.asp
+http://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
+http://www.w3schools.com/tags/canvas_beginpath.asp
