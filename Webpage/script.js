@@ -10,8 +10,16 @@ function formatMessage(raw) {
 }*/
 
 var ws;
+var canvas;
+var context;
 
 function setup() {
+	canvas = document.getElementById("mainCanvas");
+	context = canvas.getContext("2d");
+	var horizontalTransform = Number(canvas.getAttribute("width").slice(0, -2))/2;
+	var verticalTransform = Number(canvas.getAttribute("height").slice(0, -2))/2;
+	context.transform(1, 0, 0, 1, horizontalTransform, verticalTransform);
+
 	ws = new WebSocket("ws://127.0.0.1:12345/");
 	ws.onmessage = function(event) {
 		//console.log(event.data);
@@ -42,6 +50,7 @@ function mainLoop(data) {
 
 		console.log(position);
 		console.log(quaternion);
+		//document.body.innerHTML = String(position) + "\n" + String(quaternion) + "\n" + document.body.innerHTML;
 
 		sendDataRequest();
 	}
