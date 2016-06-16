@@ -1,0 +1,4 @@
+http://answers.ros.org/question/61236/multiple-subscribers-in-one-cpp-file/
+http://docs.ros.org/api/geometry_msgs/html/msg/Quaternion.html
+http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/
+http://www.w3schools.com/html/html5_canvas.asp
