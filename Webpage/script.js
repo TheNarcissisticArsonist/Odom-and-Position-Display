@@ -14,10 +14,13 @@ var canvas;
 var context;
 var currentPosition = [0, 0];
 var positionOffset = [0, 0];
+var lastPosition = [0, 0];
+var canvasImageWithoutOdometry;
 
 function setup() {
 	canvas = document.getElementById("mainCanvas");
 	context = canvas.getContext("2d");
+	canvasImageWithoutOdometry = context.getImageData(0, 0, canvas.width, canvas.height);
 	var horizontalTransform = Number(canvas.getAttribute("width").slice(0, -2))/2;
 	var verticalTransform = Number(canvas.getAttribute("height").slice(0, -2))/2;
 	context.transform(1, 0, 0, 1, horizontalTransform, verticalTransform);
@@ -66,8 +69,29 @@ function mainLoop(data) {
 		currentPosition[0] = position[0];
 		currentPosition[1] = position[1];
 
-		context.lineTo((position[0]-positionOffset[0]) * 100, (position[1]-positionOffset[1]) * -100);
+		context.save();
+		context.setTransform(1, 0, 0, 1, 0, 0);
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.restore();
+
+		context.save();
+		context.setTransform(1, 0, 0, 1, 0, 0);
+		context.putImageData(canvasImageWithoutOdometry, 0, 0);
+		context.restore();
+
+		context.beginPath();
+
+		context.moveTo((lastPosition[0]-positionOffset[0]) * 100, (lastPosition[1]-positionOffset[1]) * -100);
+		context.lineTo((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100);
 		context.stroke();
+
+		context.save();
+		context.setTransform(1, 0, 0, 1, 0, 0);
+		canvasImageWithoutOdometry = context.getImageData(0, 0, canvas.width, canvas.height);
+		context.restore();
+
+		lastPosition[0] = currentPosition[0];
+		lastPosition[1] = currentPosition[1];
 
 		//window.setTimeout(sendDataRequest, 100);
 		requestAnimationFrame(sendDataRequest);
@@ -95,8 +119,10 @@ function reset() {
 	context.save();
 	context.setTransform(1, 0, 0, 1, 0, 0);
 	context.clearRect(0, 0, canvas.width, canvas.height);
+	canvasImageWithoutOdometry = context.getImageData(0, 0, canvas.width, canvas.height);
 	context.restore();
 	context.beginPath();
 
 	context.moveTo(0, 0);
+
 }
