@@ -70,10 +70,11 @@ function mainLoop(data) {
 		currentPosition[0] = position[0];
 		currentPosition[1] = position[1];
 
-		/*roll*/ var theta = -Math.atan2(2*((quaternion[0]*quaternion[1])+(quaternion[2]*quaternion[3])), 1-(2*((quaternion[1]*quaternion[1])+(quaternion[2]*quaternion[2]))));
+		/*roll*/ var theta = Math.PI-Math.atan2(2*((quaternion[0]*quaternion[1])+(quaternion[2]*quaternion[3])), 1-(2*((quaternion[1]*quaternion[1])+(quaternion[2]*quaternion[2]))));
 		/*pitch*/ //var theta = Math.asin(2*((quaternion[0]*quaternion[2])-(quaternion[3]*quaternion[1])));
 		/*yaw*/ //var theta = Math.atan2(2*((quaternion[0]*quaternion[3])+(quaternion[1]*quaternion[2])), 1-(2*((quaternion[2]*quaternion[2])+(quaternion[3]*quaternion[3]))));
-		unitVector = [Math.cos(theta), Math.sin(theta)];
+		unitVector1 = [Math.cos(theta+(Math.PI/16)), Math.sin(theta+(Math.PI/16))];
+		unitVector2 = [Math.cos(theta-(Math.PI/16)), Math.sin(theta-(Math.PI/16))];
 
 		context.save();
 		context.setTransform(1, 0, 0, 1, 0, 0);
@@ -102,7 +103,10 @@ function mainLoop(data) {
 		context.fill();
 
 		context.moveTo((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100);
-		context.lineTo(((currentPosition[0]-positionOffset[0]) * 100)+(10*unitVector[0]), ((currentPosition[1]-positionOffset[1]) * -100)+(10*unitVector[1]));
+		context.lineTo(((currentPosition[0]-positionOffset[0]) * 100)+(10*unitVector1[0]), ((currentPosition[1]-positionOffset[1]) * -100)+(10*unitVector1[1]));
+		context.stroke();
+		context.moveTo((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100);
+		context.lineTo(((currentPosition[0]-positionOffset[0]) * 100)+(10*unitVector2[0]), ((currentPosition[1]-positionOffset[1]) * -100)+(10*unitVector2[1]));
 		context.stroke();
 
 		lastPosition[0] = currentPosition[0];
