@@ -20,6 +20,7 @@ var canvasImageWithoutOdometry;
 function setup() {
 	canvas = document.getElementById("mainCanvas");
 	context = canvas.getContext("2d");
+	context.fillStyle = "white";
 	canvasImageWithoutOdometry = context.getImageData(0, 0, canvas.width, canvas.height);
 	var horizontalTransform = Number(canvas.getAttribute("width").slice(0, -2))/2;
 	var verticalTransform = Number(canvas.getAttribute("height").slice(0, -2))/2;
@@ -89,6 +90,15 @@ function mainLoop(data) {
 		context.setTransform(1, 0, 0, 1, 0, 0);
 		canvasImageWithoutOdometry = context.getImageData(0, 0, canvas.width, canvas.height);
 		context.restore();
+
+		context.moveTo((10+(currentPosition[0]-positionOffset[0]) * 100), (currentPosition[1]-positionOffset[1]) * -100)
+		context.arc((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100, 10, 0, 2*Math.PI);
+		context.stroke();
+		context.fill();
+
+		context.moveTo((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100);
+		context.lineTo((10+(currentPosition[0]-positionOffset[0]) * 100), (currentPosition[1]-positionOffset[1]) * -100);
+		context.stroke();
 
 		lastPosition[0] = currentPosition[0];
 		lastPosition[1] = currentPosition[1];
