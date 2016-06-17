@@ -24,6 +24,8 @@ function setup() {
 	context.moveTo(0, 0);
 	context.beginPath();
 
+	dataArea = document.getElementById("dataPrintout");
+
 	ws = new WebSocket("ws://127.0.0.1:12345/");
 	ws.onmessage = function(event) {
 		//console.log(event.data);
@@ -52,8 +54,13 @@ function mainLoop(data) {
 			quaternion[i] = Number(quaternion[i].slice(2));
 		}
 
-		console.log(position);
-		console.log(quaternion);
+		//var part1 = "["+position[0]+", "+position[1]+", "+position[2]+"] ";
+		//var part2 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+		//var part3 = "["+quaternion[0]+", "+quaternion[1]+", "+quaternion[2]+", "+quaternion[3]+"]<br>";
+		//dataArea.innerHTML = part1 + part2 + part3 + dataArea.innerHTML;
+		
+		//console.log(position);
+		//console.log(quaternion);
 		//document.body.innerHTML = String(position) + "\n" + String(quaternion) + "\n" + document.body.innerHTML;
 
 		currentPosition[0] = position[0];
@@ -62,7 +69,7 @@ function mainLoop(data) {
 		context.lineTo((position[0]-positionOffset[0]) * 100, (position[1]-positionOffset[1]) * -100);
 		context.stroke();
 
-		sendDataRequest();
+		window.setTimeout(sendDataRequest, 100);
 	}
 	else {
 		console.log("Improper data received!");
