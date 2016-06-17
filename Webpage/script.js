@@ -69,7 +69,8 @@ function mainLoop(data) {
 		context.lineTo((position[0]-positionOffset[0]) * 100, (position[1]-positionOffset[1]) * -100);
 		context.stroke();
 
-		window.setTimeout(sendDataRequest, 100);
+		//window.setTimeout(sendDataRequest, 100);
+		requestAnimationFrame(sendDataRequest);
 	}
 	else {
 		console.log("Improper data received!");
