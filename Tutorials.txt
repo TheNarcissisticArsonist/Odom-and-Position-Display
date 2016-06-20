@@ -7,3 +7,5 @@ http://www.w3schools.com/tags/canvas_transform.asp
 http://www.w3schools.com/html/html5_canvas.asp
 http://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
 http://www.w3schools.com/tags/canvas_beginpath.asp
+http://stackoverflow.com/questions/5406368/can-you-use-css-to-mirror-flip-text
+https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
