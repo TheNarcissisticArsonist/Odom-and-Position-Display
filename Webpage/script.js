@@ -23,6 +23,8 @@ function setup() { //Call this to get the program going.
 	context.beginPath(); //This starts a path so lines can be drawn.
 
 	dataArea = document.getElementById("dataPrintout"); //As the program receives data, this area on the webpage can be used to record it.
+	updateZoomButton = document.getElementById("updateZoom"); //Click this to update the zoom factor to contain the whole path.
+	updateZoomButton.addEventListener("click", updateZoom);
 
 	ws = new WebSocket("ws://"+webSocketIP+":"+webSocketPort+webSocketPath); //This creates the websocket object.
 	ws.onmessage = function(event) { //When a message is received...
@@ -126,4 +128,20 @@ function quaternionToEuler(quat) { //This takes the quaternion array [x, y, z, w
 	euler[1] = Math.asin(2*((quat[0]*quat[2]) - (quat[3]*quat[1])));
 	euler[2] = Math.atan2(2*((quat[0]*quat[3]) + (quat[1]*quat[2])), 1-(2*((quat[2]*quat[2]) + (quat[3]*quat[3]))));
 	return euler;
+}
+function updateZoom() {
+	var furthestPointIndex = 0;
+	var furthestDistance = distance(pointsRecord[0], pointsRecord[pointsRecord.length-1]);
+	var maxDistance = (canvas.width/2) - (canvas.width/100);
+	for(var i=1; i<pointsRecord.length-1; ++i) {
+		currentDistance = distance(pointsRecord[i], pointsRecord[pointsRecord.length-1]);
+		if(currentDistance >= furthestDistance) {
+			furthestPointIndex = i;
+			furthestDistance = currentDistance;
+		}
+	}
+	scaleFactor = maxDistance/furthestDistance;
+}
+function distance(pointA, pointB) {
+	return Math.sqrt(Math.pow(pointB[0]-pointA[0], 2) + Math.pow(pointB[1]-pointA[1], 2));
 }
