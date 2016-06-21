@@ -6,7 +6,7 @@ var formattedDataStringPositionIndeces = [10, 11, 12]; //The location of the xyz
 var formattedDataStringQuaternionIndeces = [14, 15, 16, 17]; //The location of the xyzw quaternion data in the formatted data string.
 var eulerAngleUsed = 0; //Due to some weirdness with the robot's orientation data, the Euler angle for the XY-plane can be unexpected.
 						//0 is roll, 1 is pitch, 2 is yaw.
-var robotMarkerRadius = 1; //The radius of the circle that marks the robot's location, in meters.
+var robotMarkerRadius = 0.1; //The radius of the circle that marks the robot's location, in meters.
 var robotMarkerArrowAngle = Math.PI/16; //There's an arrow on the circle, showing which direction the robot is pointing. This is the angle between the centerline and one of the sides.
 
 pointsRecord = [[0, 0], [0, 0]]; //This record the list of 2D point where the robot has been, so the program can draw lines between them.
@@ -83,10 +83,10 @@ function mainLoop(data) {
 
 		//Strategically draw lines from the center of the circle to the circle so that it looks like there's an arrow on the inside of the circle, showing the direction of the robot.
 		context.moveTo(0, 0);
-		context.lineTo(Math.cos(robotMarkerArrowAngle), Math.sin(robotMarkerArrowAngle));
+		context.lineTo(robotMarkerRadius*Math.cos(robotMarkerArrowAngle), robotMarkerRadius*Math.sin(robotMarkerArrowAngle));
 		context.stroke();
 		context.moveTo(0, 0);
-		context.lineTo(Math.cos(robotMarkerArrowAngle), Math.sin(robotMarkerArrowAngle));
+		context.lineTo(robotMarkerRadius*Math.cos(robotMarkerArrowAngle), robotMarkerRadius*Math.sin(robotMarkerArrowAngle));
 		context.stroke();
 
 		//window.setTimeout(sendDataRequest, 100);
