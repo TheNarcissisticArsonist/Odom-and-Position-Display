@@ -77,8 +77,8 @@ function mainLoop(data) {
 
 		context.beginPath();
 
-		context.moveTo((lastPosition[0]-positionOffset[0]) * 100, (lastPosition[1]-positionOffset[1]) * -100);
-		context.lineTo((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100);
+		context.moveTo((lastPosition[0]-positionOffset[0]) * 1, (lastPosition[1]-positionOffset[1]) * -1);
+		context.lineTo((currentPosition[0]-positionOffset[0]) * 1, (currentPosition[1]-positionOffset[1]) * -1);
 		context.stroke();
 
 		context.save();
@@ -86,16 +86,16 @@ function mainLoop(data) {
 		canvasImageWithoutOdometry = context.getImageData(0, 0, canvas.width, canvas.height);
 		context.restore();
 
-		context.moveTo((10+(currentPosition[0]-positionOffset[0]) * 100), (currentPosition[1]-positionOffset[1]) * -100)
-		context.arc((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100, 10, 0, 2*Math.PI);
+		context.moveTo((10+(currentPosition[0]-positionOffset[0]) * 1), (currentPosition[1]-positionOffset[1]) * -1)
+		context.arc((currentPosition[0]-positionOffset[0]) * 1, (currentPosition[1]-positionOffset[1]) * -1, 10, 0, 2*Math.PI);
 		context.stroke();
 		context.fill();
 
-		context.moveTo((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100);
-		context.lineTo(((currentPosition[0]-positionOffset[0]) * 100)+(10*unitVector1[0]), ((currentPosition[1]-positionOffset[1]) * -100)+(10*unitVector1[1]));
+		context.moveTo((currentPosition[0]-positionOffset[0]) * 1, (currentPosition[1]-positionOffset[1]) * -1);
+		context.lineTo(((currentPosition[0]-positionOffset[0]) * 1)+(10*unitVector1[0]), ((currentPosition[1]-positionOffset[1]) * -1)+(10*unitVector1[1]));
 		context.stroke();
-		context.moveTo((currentPosition[0]-positionOffset[0]) * 100, (currentPosition[1]-positionOffset[1]) * -100);
-		context.lineTo(((currentPosition[0]-positionOffset[0]) * 100)+(10*unitVector2[0]), ((currentPosition[1]-positionOffset[1]) * -100)+(10*unitVector2[1]));
+		context.moveTo((currentPosition[0]-positionOffset[0]) * 1, (currentPosition[1]-positionOffset[1]) * -1);
+		context.lineTo(((currentPosition[0]-positionOffset[0]) * 1)+(10*unitVector2[0]), ((currentPosition[1]-positionOffset[1]) * -1)+(10*unitVector2[1]));
 		context.stroke();
 
 		lastPosition[0] = currentPosition[0];
