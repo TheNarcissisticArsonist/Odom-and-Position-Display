@@ -6,10 +6,10 @@ var formattedDataStringPositionIndeces = [10, 11, 12]; //The location of the xyz
 var formattedDataStringQuaternionIndeces = [14, 15, 16, 17]; //The location of the xyzw quaternion data in the formatted data string.
 var eulerAngleUsed = 0; //Due to some weirdness with the robot's orientation data, the Euler angle for the XY-plane can be unexpected.
 						//0 is roll, 1 is pitch, 2 is yaw.
-var robotMarkerRadius = 0.1; //The radius of the circle that marks the robot's location, in meters.
-var robotMarkerArrowAngle = Math.PI/16; //There's an arrow on the circle, showing which direction the robot is pointing. This is the angle between the centerline and one of the sides.
+var robotMarkerRadius = 0.3; //The radius of the circle that marks the robot's location, in meters.
+var robotMarkerArrowAngle = Math.PI/6; //There's an arrow on the circle, showing which direction the robot is pointing. This is the angle between the centerline and one of the sides.
 
-pointsRecord = [[0, 0], [0, 0]]; //This record the list of 2D point where the robot has been, so the program can draw lines between them.
+pointsRecord = []; //This record the list of 2D point where the robot has been, so the program can draw lines between them.
 scaleFactor = 100; //As the path and information get bigger, it's useful to zoom out.
 positionOffset = [0, 0]; //This is used to keep the robot's location on the screen centered.
 pathMaxLength = Infinity; //If the program ever starts to get slow, this can be used to begin erasing points from the beginning of the path.
@@ -17,7 +17,7 @@ pathMaxLength = Infinity; //If the program ever starts to get slow, this can be 
 
 function setup() { //Call this to get the program going.
 	canvas = document.getElementById("mainCanvas"); //Grab the HTMl of the canvas.
-	//canvas.style.transform = "scale(1, -1)";
+	canvas.style.transform = "matrix(0, -1, 1, 0, 0, 0)"; //Rotate the canvas so up is forward, like in a map.
 	context = canvas.getContext("2d"); //All canvas drawings are done through a context.
 	context.fillStyle = "white"; //Set the fill style of closed shapes on the canvas to white.
 	context.beginPath(); //This starts a path so lines can be drawn.
@@ -65,32 +65,36 @@ function mainLoop(data) {
 
 		context.setTransform(1, 0, 0, 1, 0, 0); //Reset all transforms on the context.
 		context.clearRect(0, 0, canvas.width, canvas.height); //Clear the canvas.
-		context.transform(1, 0, 0, 1, canvas.width/2, canvas.height/2);
+		context.transform(1, 0, 0, 1, canvas.width/2, canvas.height/2); //Put 0, 0 in the center of the canvas.
 		context.transform(scaleFactor, 0, 0, scaleFactor, 0, 0); //Scale the canvas.
-		context.transform(Math.cos(-theta), Math.sin(-theta), -Math.sin(-theta), Math.cos(-theta), 0, 0); //Rotate the canvas.
-		context.beginPath(); //Start the path.
+		context.transform(1, 0, 0, -1, 0, 0); //Flip the canvas so y+ is up.
 
+		context.beginPath();
+		context.arc(0, 0, robotMarkerRadius, 0, 2*Math.PI); //This will draw a circle around the center for the robot marker.
+		context.stroke();
+
+		//These lines draw a triangle inside the circle, to show the direction of the robot.
+		context.beginPath();
+		context.moveTo(robotMarkerRadius*Math.cos(0), robotMarkerRadius*Math.sin(0));
+		context.lineTo(robotMarkerRadius*Math.cos(Math.PI-robotMarkerArrowAngle), robotMarkerRadius*Math.sin(Math.PI-robotMarkerArrowAngle));
+		context.stroke();
+		context.moveTo(robotMarkerRadius*Math.cos(0), robotMarkerRadius*Math.sin(0));
+		context.lineTo(robotMarkerRadius*Math.cos(Math.PI-robotMarkerArrowAngle), -robotMarkerRadius*Math.sin(Math.PI-robotMarkerArrowAngle));
+		context.stroke();
+		context.moveTo(robotMarkerRadius*Math.cos(Math.PI-robotMarkerArrowAngle), robotMarkerRadius*Math.sin(Math.PI-robotMarkerArrowAngle));
+		context.lineTo(robotMarkerRadius*Math.cos(Math.PI-robotMarkerArrowAngle), -robotMarkerRadius*Math.sin(Math.PI-robotMarkerArrowAngle));
+		context.stroke();
+
+		context.transform(Math.cos(theta), Math.sin(theta), -Math.sin(theta), Math.cos(theta), 0, 0); //Orient the path behind the robot properly.
 		context.moveTo(pointsRecord[0][0]-positionXYZ[0], pointsRecord[0][1]-positionXYZ[1]); //Move to the first point in the path.
-		for(var i=1; i<pointsRecord.length; ++i) { //The first index is 1, because it accesses i and i-1 in the loop.
+		context.beginPath();
+		for(var i=1; i<pointsRecord.length; ++i) { //This draws lines from point i to point i-1
 			context.lineTo(pointsRecord[i][0]-positionXYZ[0], pointsRecord[i][1]-positionXYZ[1]); //Draw a line to the next point.
 			context.stroke();
 		}
 
-		context.moveTo(0, 0);
-		context.arc(0, 0, robotMarkerRadius, 0, 2*Math.PI); //This will draw a circle around the center.
-		context.stroke();
-		//context.fill(); //This fills it in, so the line connecting the center to the circle is not displayed.
-
-		//Strategically draw lines from the center of the circle to the circle so that it looks like there's an arrow on the inside of the circle, showing the direction of the robot.
-		context.moveTo(0, 0);
-		context.lineTo(robotMarkerRadius*Math.cos(robotMarkerArrowAngle), robotMarkerRadius*Math.sin(robotMarkerArrowAngle));
-		context.stroke();
-		context.moveTo(0, 0);
-		context.lineTo(robotMarkerRadius*Math.cos(robotMarkerArrowAngle), robotMarkerRadius*Math.sin(robotMarkerArrowAngle));
-		context.stroke();
-
-		//window.setTimeout(sendDataRequest, 100);
-		requestAnimationFrame(sendDataRequest);
+		window.setTimeout(sendDataRequest, 100);
+		//requestAnimationFrame(sendDataRequest);
 	}
 	else { //Ok, so there's a problem with the data...
 		console.log("Improper data received!"); //Tell me wtf is going on.
