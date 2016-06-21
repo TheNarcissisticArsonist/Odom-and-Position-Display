@@ -85,7 +85,7 @@ function mainLoop(data) {
 		context.lineTo(robotMarkerRadius*Math.cos(Math.PI-robotMarkerArrowAngle), -robotMarkerRadius*Math.sin(Math.PI-robotMarkerArrowAngle));
 		context.stroke();
 
-		context.transform(Math.cos(theta), Math.sin(theta), -Math.sin(theta), Math.cos(theta), 0, 0); //Orient the path behind the robot properly.
+		context.transform(Math.cos(-theta), Math.sin(-theta), -Math.sin(-theta), Math.cos(-theta), 0, 0); //Orient the path behind the robot properly.
 		context.moveTo(pointsRecord[0][0]-positionXYZ[0], pointsRecord[0][1]-positionXYZ[1]); //Move to the first point in the path.
 		context.beginPath();
 		for(var i=1; i<pointsRecord.length; ++i) { //This draws lines from point i to point i-1
