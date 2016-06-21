@@ -25,6 +25,9 @@ function setup() { //Call this to get the program going.
 	dataArea = document.getElementById("dataPrintout"); //As the program receives data, this area on the webpage can be used to record it.
 	updateZoomButton = document.getElementById("updateZoom"); //Click this to update the zoom factor to contain the whole path.
 	updateZoomButton.addEventListener("click", updateZoom);
+	enterZoomTextArea = document.getElementById("youSetZoom");
+	enterZoomButton = document.getElementById("enterZoom");
+	enterZoomButton.addEventListener("click", enterZoom);
 
 	ws = new WebSocket("ws://"+webSocketIP+":"+webSocketPort+webSocketPath); //This creates the websocket object.
 	ws.onmessage = function(event) { //When a message is received...
@@ -144,4 +147,12 @@ function updateZoom() {
 }
 function distance(pointA, pointB) {
 	return Math.sqrt(Math.pow(pointB[0]-pointA[0], 2) + Math.pow(pointB[1]-pointA[1], 2));
+}
+function enterZoom() {
+	console.log(rawFactor);
+	if(!isNaN(rawFactor)) {
+		if(Number(rawFactor) > 0) {
+			scaleFactor = 100/Number(rawFactor);
+		}
+	}
 }
