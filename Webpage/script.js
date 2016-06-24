@@ -13,8 +13,8 @@ var pointsRecord = []; //This record the list of 2D point where the robot has be
 var scaleFactor = 100; //As the path and information get bigger, it's useful to zoom out.
 var positionOffset = [0, 0]; //This is used to keep the robot's location on the screen centered.
 var pathMaxLength = Infinity; //If the program ever starts to get slow, this can be used to begin erasing points from the beginning of the path.
-						  //I'll set it to something once I find that point.
-var autoZoom = false;
+						 	  //I'll set it to something once I find that point.
+var autoZoom = false; //This can be toggled. If it's true, the map will scale automatically so everything is visible. 
 
 function setup() { //Call this to get the program going.
 	canvas = document.getElementById("mainCanvas"); //Grab the HTMl of the canvas.
@@ -70,7 +70,7 @@ function mainLoop(data) {
 		pointsRecord.push([positionXYZ[0], positionXYZ[1]]); //Store the next point to the list.
 
 		if(autoZoom) {
-			updateZoom();
+			updateZoom(); //If autozoom is selected, automatically set the zoom.
 		}
 
 		context.lineWidth = 1/scaleFactor; //Make sure the lines don't freak out.
@@ -105,8 +105,8 @@ function mainLoop(data) {
 			context.stroke();
 		}
 
-		window.setTimeout(sendDataRequest, 100);
-		//requestAnimationFrame(sendDataRequest);
+		window.setTimeout(sendDataRequest, 100); //When using recorded data, use window.setTimeout().
+		//requestAnimationFrame(sendDataRequest); //When using data directly from the robot, use requestAnimationFrame().
 	}
 	else { //Ok, so there's a problem with the data...
 		console.log("Improper data received!"); //Tell me wtf is going on.
@@ -140,11 +140,14 @@ function quaternionToEuler(quat) { //This takes the quaternion array [x, y, z, w
 	return euler;
 }
 function updateZoom() {
+	//This function iterates through every point, determining which point is the furthest away from the current location.
+	//Then, it sets the zoom so that the entire map is visible.
 	var furthestPointIndex = 0;
 	var furthestDistance = distance(pointsRecord[0], pointsRecord[pointsRecord.length-1]);
-	var maxDistance = (canvas.width/2) - (canvas.width/100);
+	var maxDistance = (canvas.width/2) - (canvas.width/100); //This makes sure there's a little buffer space around the robot's path.
+
 	for(var i=1; i<pointsRecord.length-1; ++i) {
-		currentDistance = distance(pointsRecord[i], pointsRecord[pointsRecord.length-1]);
+		currentDistance = distance(pointsRecord[i], pointsRecord[pointsRecord.length-1]); //This calculates the distance between the selected point and the most recent point.
 		if(currentDistance >= furthestDistance) {
 			furthestPointIndex = i;
 			furthestDistance = currentDistance;
@@ -153,16 +156,18 @@ function updateZoom() {
 	scaleFactor = maxDistance/furthestDistance;
 }
 function distance(pointA, pointB) {
+	//This is just an implementation of the distance formula.
 	return Math.sqrt(Math.pow(pointB[0]-pointA[0], 2) + Math.pow(pointB[1]-pointA[1], 2));
 }
-function enterZoom() {
+function enterZoom() { //Change the scale factor based on user input.
 	console.log(rawFactor);
-	if(!isNaN(rawFactor)) {
-		if(Number(rawFactor) > 0) {
+	if(!isNaN(rawFactor)) { //Make sure it's a number.
+		if(Number(rawFactor) > 0) { //Make sure it's positive.
 			scaleFactor = 100/Number(rawFactor);
 		}
 	}
 }
 function toggleAutoZoom() {
+	//This is called when you click the button to toggle automatic zoom.
 	autoZoom = !autoZoom;
 }
